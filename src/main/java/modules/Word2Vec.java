@@ -15,7 +15,7 @@ import misc.Cons;
 
 public class Word2Vec {
 	
-	private ArrayList<String[]> dataVectors;
+	private ArrayList<String[]> dataVectors;  //clean data
 	private ArrayList<String> stopwords;
 	private HashMap<String, Integer> labelIndexMap;
 	private ArrayList<String> targetLabels;
@@ -64,6 +64,7 @@ public class Word2Vec {
 					
 					for(int clmnCount = 0; clmnCount < tokens.length; clmnCount++){
 						//DO preprocessing here
+						//if data is target data, 
 						String data = getRidofQuotes(tokens[clmnCount]);
 						
 //						dataVectors.get(clmnCount).add(getRidofQuotes(tokens[clmnCount]));
@@ -212,7 +213,7 @@ public class Word2Vec {
 	 * @return
 	 */
 	private String HanguelEngOnly(String data){
-		String pattern = "[^a-zA-Z가-힣 ]";
+		String pattern = "[^a-zA-Z媛���]";
 		data = data.replaceAll(pattern, " ");
 		return data;
 	}
