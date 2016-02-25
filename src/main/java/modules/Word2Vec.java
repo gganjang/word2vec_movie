@@ -187,7 +187,7 @@ public class Word2Vec {
 				if(b == vocab.size() * 2 -2)
 					break;
 			}
-			
+			//What to do
 		}
 	}
 	
