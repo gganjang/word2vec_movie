@@ -17,7 +17,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -82,7 +84,9 @@ public class Word2Vec {
 		logger.info("vocab is created");
 		logger.info("sorting vocab");
 		Comparator<Entry<String, VocabWord>> valueComparator = (e1, e2) -> e1.getValue().count.compareTo(e2.getValue().count);
-		vocab = vocab.entrySet().stream().sorted(Collections.reverseOrder(valueComparator))
+		
+		//.sorted(Collections.reverseOrder(valueCOmparator)) -> decent order
+		vocab = vocab.entrySet().stream().sorted(valueComparator)
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 		
 		//beginning of word cut
@@ -132,63 +136,9 @@ public class Word2Vec {
 	 * This method grants binary code for each vocab
 	 */
 	private void createBinaryTree(){
-		long a, b, i, min1i, min2i, point[] = new long[Cons.MAX_CODE_LENGTH];
-		long pos1 = vocab.size() - 1;
-		long pos2 = vocab.size();
-		String code;
-		long count[] = new long[vocab.size() * 2 + 1];
-		long binary[] = new long[vocab.size() * 2 + 1];
-		long parent_node[] = new long[vocab.size() * 2 + 1];
 		
 		
-		//Following algorithm constructs the Huffman tree by adding one node at a time
-		for(a = 0; a < vocab.size() - 1; a++){
-			//First, find two smallest nodes 'min1, min2'
-			if(pos1 >= 0){
-				if(count[(int)pos1] < count[(int)pos2]){
-					min1i = pos1;
-					pos1--;
-				} else{
-					min1i = pos2;
-					pos2++;
-				}
-			} else{
-				min1i = pos2;
-				pos2++;
-			}
-			
-			if(pos1 >= 0){
-				if(count[(int)pos1] < count[(int)pos2]){
-					min2i = pos1;
-					pos1--;
-				} else{
-					min2i = pos2;
-					pos2++;
-				}
-			} else{
-				min2i = pos2;
-				pos2++;
-			}
-			count[(int)(vocab.size() + a)] = count[(int)min1i] + count[(int)min2i];
-			parent_node[(int)min1i] = vocab.size() + a;
-			parent_node[(int)min2i] = vocab.size() + a;
-			binary[(int)min2i] = 1;
-		}
 		
-		//Now assign binary code to each vocabulary word
-		for(a = 0; a < vocab.size(); a++){
-			b = a;
-			i = 0;
-			while(true){
-				code = binary[(int)b]+"";
-				point[(int)i] = b;
-				i++;
-				b = parent_node[(int)b];
-				if(b == vocab.size() * 2 -2)
-					break;
-			}
-			//What to do
-		}
 	}
 	
 	
@@ -270,6 +220,17 @@ public class Word2Vec {
 		}
 		
 		
+	}
+	
+	public void printCode4EachVocab(int num){
+		Iterator<Entry<String, VocabWord>> vocabItr = (Iterator<Entry<String, VocabWord>>)vocab.entrySet().iterator();
+		while(vocabItr.hasNext()){
+			if(num == 0)
+				break;
+			Entry<String, VocabWord> en = vocabItr.next();
+			System.out.println(en.getKey() + "\t" + en.getValue().code + "\t" + en.getValue().codelen);
+			num--;
+		}
 	}
 	
 	public void writePreprocessedTrainingData(String fileName){
