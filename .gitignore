@@ -1,3 +1,5 @@
 /target/
 /data/
 /logs/
+/neuralNet.txt
+/trainingData.txt
